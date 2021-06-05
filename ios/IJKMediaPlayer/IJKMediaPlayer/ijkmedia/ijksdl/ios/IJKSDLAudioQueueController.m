@@ -26,6 +26,7 @@
 #import "IJKSDLAudioQueueController.h"
 #import "IJKSDLAudioKit.h"
 #import "ijksdl_log.h"
+#import "ijksdl_thread_ios.h"
 
 #import <AVFoundation/AVFoundation.h>
 
@@ -161,9 +162,11 @@
             return;
 
         _isPaused = YES;
-        OSStatus status = AudioQueuePause(_audioQueueRef);
-        if (status != noErr)
-            NSLog(@"AudioQueue: AudioQueuePause failed (%d)\n", (int)status);
+        IJKMainThredExecute(^{
+            OSStatus status = AudioQueuePause(_audioQueueRef);
+            if (status != noErr)
+                NSLog(@"AudioQueue: AudioQueuePause failed (%d)\n", (int)status);
+        });
     }
 }
 
